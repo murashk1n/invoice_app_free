@@ -23,7 +23,7 @@ def page_all_services(page: ft.Page, params: Params, basket: Basket):
 		try:
 			# INPUT TO DATABASE
 			c = conn.cursor()
-			c.execute("INSERT INTO service (name, description) VALUES(?,?,?)",(name.value, description.value))
+			c.execute("INSERT INTO service (name, description) VALUES(?,?)",(name.value, description.value))
 			conn.commit()
 
 			# AND SLIDE RIGHT AGAIN IF FINAL INPUT SUUCESS

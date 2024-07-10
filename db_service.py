@@ -86,7 +86,7 @@ def calldb():
 	c.execute("SELECT * FROM service")
 	products = c.fetchall()
 	if not products == "":
-		keys = ['id', 'category_id', 'name', 'description']
+		keys = ['id', 'name', 'description']
 		result = [dict(zip(keys, values)) for values in products]
 		for x in result:
 			tb.rows.append(
