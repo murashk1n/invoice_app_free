@@ -6,13 +6,16 @@ from views.app_bar import AppBar
 from util.snack_bar import show_snack_bar
 from Bill import get_user
 
+global_user = ['','','','']
+
 def page_my_info(page: ft.Page, params: Params, basket: Basket):
     
     def save(e):
         if validate_email(user_email.value) == True:
           show_snack_bar(e.page, 'Saved!')
-          get_user([user_name.value,user_company.value,user_email.value, user_phone.value])
-
+          global global_user
+          global_user = [user_name.value,user_company.value,user_email.value, user_phone.value]
+          get_user(global_user)
           page.update()
         else:
           show_snack_bar(e.page, 'Wrong email format!')  
@@ -24,10 +27,10 @@ def page_my_info(page: ft.Page, params: Params, basket: Basket):
             btn_save.disabled = True
         page.update()
 
-    user_name = ft.TextField(label='Name', width=200, on_change=validate)
-    user_company = ft.TextField(label='Company', width=200, on_change=validate)
-    user_email = ft.TextField(label='Email', width=200, on_change=validate)
-    user_phone = ft.TextField(label='Phone', width=200, on_change=validate, input_filter=ft.InputFilter(
+    user_name = ft.TextField(label='Name', value=global_user[0], width=200, on_change=validate)
+    user_company = ft.TextField(label='Company', value=global_user[1], width=200, on_change=validate)
+    user_email = ft.TextField(label='Email', value=global_user[2], width=200, on_change=validate)
+    user_phone = ft.TextField(label='Phone', value=global_user[3], width=200, on_change=validate, input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"[0-9+]",
             replacement_string="",
