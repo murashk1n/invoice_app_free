@@ -4,13 +4,15 @@ from validate_email import validate_email
 from flet import * 
 from views.app_bar import AppBar
 from util.snack_bar import show_snack_bar
+from Bill import get_user
 
 def page_my_info(page: ft.Page, params: Params, basket: Basket):
     
     def save(e):
         if validate_email(user_email.value) == True:
           show_snack_bar(e.page, 'Saved!')
-        #   page.go('/page_menu')
+          get_user([user_name.value,user_company.value,user_email.value, user_phone.value])
+
           page.update()
         else:
           show_snack_bar(e.page, 'Wrong email format!')  
@@ -38,6 +40,7 @@ def page_my_info(page: ft.Page, params: Params, basket: Basket):
         controls = [
             AppBar().build(),
             Text(value='MY INFO', size=30),
+            OutlinedButton(text = "Back to menu",width=200, on_click=lambda _:page.go('/page_menu')),
             ft.Row(
               [
                 ft.Column(

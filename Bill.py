@@ -5,17 +5,21 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.pagesizes import LETTER
 from reportlab.graphics.shapes import Line, Drawing
 from reportlab.lib.colors import Color
-
 import sqlite3
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
 
 global_bill = []
 global_customer = []
+global_user = []
 
 def get_invoice(invoice):
     global global_bill
     global_bill = invoice
+    
+def get_user(user):
+    global global_user
+    global_user = user
     
 def get_customer():
     c = conn.cursor()
@@ -69,6 +73,8 @@ class PDFPSReporte:
             address = f"Address: {global_customer[3]}"
             phone = f"Phone: {global_customer[6]}"
             email =  f"Email: {global_customer[7]}"
+            user =  f"User: {global_user[1]}"
+            print(user)
             
             paragraphReportSummary = Paragraph(name, psDetalle)
             self.elements.append(paragraphReportSummary)
@@ -77,6 +83,8 @@ class PDFPSReporte:
             paragraphReportSummary = Paragraph(phone, psDetalle)
             self.elements.append(paragraphReportSummary)
             paragraphReportSummary = Paragraph(email, psDetalle)
+            self.elements.append(paragraphReportSummary)
+            paragraphReportSummary = Paragraph(user, psDetalle)
             self.elements.append(paragraphReportSummary)
 
             psHeaderText = ParagraphStyle('Hed0', fontSize=16, alignment=TA_CENTER, borderWidth=3, textColor=self.colorOhkaGreen0)
@@ -176,6 +184,7 @@ class PDFPSReporte:
         lines = list(c.fetchall())
         
         for line in lines:
+            print(line)
             lineData = []
             lineData.append(str(line[1]))  # Adding invoice line ID
             lineData.append(str(line[2]))  # Adding product item ID
