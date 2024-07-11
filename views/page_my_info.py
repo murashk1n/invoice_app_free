@@ -16,7 +16,7 @@ def page_my_info(page: ft.Page, params: Params, basket: Basket):
           global global_user
           global_user = [user_name.value,user_company.value,user_email.value, user_phone.value, user_iban.value, user_bic.value]
           get_user(global_user)
-          page.go('/page_menu')
+          page.go('/page_customer')
         else:
           show_snack_bar(e.page, 'Wrong email format!')  
 

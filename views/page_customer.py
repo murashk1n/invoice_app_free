@@ -16,7 +16,7 @@ def page_customer(page: ft.Page, params: Params, basket: Basket):
           global global_customer
           global_customer = [customer_name.value,customer_company.value,customer_email.value, customer_phone.value]
           get_user(global_customer)
-          page.go('/page_menu')
+          page.go('/page_services')
         else:
           show_snack_bar(e.page, 'Wrong email format!')  
 
@@ -42,7 +42,7 @@ def page_customer(page: ft.Page, params: Params, basket: Basket):
         
         controls = [
             AppBar().build(),
-            Text(value='MY INFO', size=30),
+            Text(value='CUSTOMER', size=30),
             ft.Row(
               [
                 ft.Column(
