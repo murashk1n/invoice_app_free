@@ -16,7 +16,7 @@ def page_my_info(page: ft.Page, params: Params, basket: Basket):
           global global_user
           global_user = [user_name.value,user_company.value,user_email.value, user_phone.value]
           get_user(global_user)
-          page.update()
+          page.go('/page_menu')
         else:
           show_snack_bar(e.page, 'Wrong email format!')  
 
@@ -43,7 +43,7 @@ def page_my_info(page: ft.Page, params: Params, basket: Basket):
         controls = [
             AppBar().build(),
             Text(value='MY INFO', size=30),
-            OutlinedButton(text = "Back to menu",width=200, on_click=lambda _:page.go('/page_menu')),
+            # OutlinedButton(text = "Back to menu",width=200, on_click=lambda _:page.go('/page_menu')),
             ft.Row(
               [
                 ft.Column(

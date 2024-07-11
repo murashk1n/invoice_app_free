@@ -10,7 +10,7 @@ def Home(page: Page, params: Params, basket: Basket):
                 Row([
                     FilledButton("START",
                     style=ButtonStyle(shape=CircleBorder(),padding=30),
-                    on_click=lambda _:page.go('/page_menu'),
+                    on_click=lambda _:page.go('/page_my_info'),
             )],alignment=MainAxisAlignment.CENTER,) 
             ])
         ])
