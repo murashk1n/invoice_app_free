@@ -1,16 +1,25 @@
 import flet as ft
 from flet_route import Params, Basket
-from validate_email import validate_email
 from flet import * 
 from views.app_bar import AppBar
 from util.snack_bar import show_snack_bar
 from Bill import get_user
 
-global_service = ['','','','']
+global_service = []
 
 def page_services(page: ft.Page, params: Params, basket: Basket):
     
     def save(e):
+      # Add new service data to global_service list
+      service_id = len(global_service)
+      global_service.append({
+            'id': service_id,
+            'name': service_name.value,
+            'price': service_price.value,
+            'amount': service_amount.value,
+            'description': service_description.value
+      })
+      
       mytable.rows.append(
 			DataRow(
 			cells=[
@@ -23,10 +32,15 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
 			],
 			# IF YOU CLIK THIS ROW THEN RUN YOU FUNCTION
 			# THIS SCRIPT IS IF CLICK THEN GET THE ID AND NAME OF ROW		
-		  on_select_changed=lambda e:editindex(e.control.cells[0].content.value,e.control.cells[1].content.value,e.control.cells[2].content.value,e.control.cells[3].content.value,e.control.cells[4].content.value)
+		  on_select_changed=lambda e:editindex(
+        e.control.cells[0].content.value,
+        e.control.cells[1].content.value,
+        e.control.cells[2].content.value,
+        e.control.cells[3].content.value,
+        e.control.cells[4].content.value)
 				)
-
 			)
+      
 		  # THEN BLANK AGAIN THE TEXTFIELD
       service_name.value = ""
       service_price.value = ""
@@ -34,20 +48,13 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
       service_description.value = ""
       page.update()
       
-
-          # global global_service
-          # global_service = [service_name.value,service_price.value,service_amount.value, service_description.value]
-          # get_user(global_service)
- 
-      
-    def editindex(e,a,b,c,d):
-
+    def editindex(id, a,b,c,d):
 		  # SET NAME TEXTFIELD TO YOU SELECT THE ROW
+      youid.value = int(id)
       service_name.value = a
       service_price.value = b
       service_amount.value = c
       service_description.value = d
-      youid.value = int(e)
 
 		  # HIDE THE ADD NEW BUTTON . AND TRUE OF EDIT AND DELETE BUTTON
       btn_add.visible = False
@@ -56,32 +63,57 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
       page.update()
       
     def editandsave(e):
-		# THIS SCRIPT IS SELECT YOU DATA BEFORE AND
-		# CHANGE TO NEW DATA FOR UPDATE IN TEXTFIELD
+		    # Update global_service with edited data
+      global_service[youid.value] = {
+            'id': youid.value,
+            'name': service_name.value,
+            'price': service_price.value,
+            'amount': service_amount.value,
+            'description': service_description.value
+      }
 
-      mytable.rows[youid.value].cells[1].content = Text(service_name.value)
-      mytable.rows[youid.value].cells[2].content = Text(service_price.value)
-      mytable.rows[youid.value].cells[3].content = Text(service_amount.value)
-      mytable.rows[youid.value].cells[4].content = Text(service_description.value)
+      # Update the table row with new data
+      row = mytable.rows[youid.value]
+      row.cells[1].content = Text(service_name.value)
+      row.cells[2].content = Text(service_price.value)
+      row.cells[3].content = Text(service_amount.value)
+      row.cells[4].content = Text(service_description.value)
       show_snack_bar(e.page, 'Updated!')
     
     def removeindex(e):
-      del mytable.rows[youid.value]
+      # Remove service from global_service
+      global_service.pop(youid.value)
+      mytable.rows.pop(youid.value)
+      
+     # Reassign IDs and update the table and global_service
+      for index, service in enumerate(global_service):
+          service['id'] = index
+          row = mytable.rows[index]
+          row.cells[0].content = Text(index)
+
       show_snack_bar(e.page, 'Deleted!')
+      btn_add.visible = True
+      btn_delete.visible = False
+      btn_edit.visible = False
+      page.update()
         
     youid = Text("")
-    service_name = ft.TextField(label='Name', value=global_service[0], width=200)
-    service_price = ft.TextField(label='Price', value=global_service[1], width=200, input_filter=ft.InputFilter(
+    service_name = ft.TextField(label='Name', width=200)
+    service_price = ft.TextField(
+        label='Price',
+        width=200,
+        input_filter=ft.InputFilter(
+            allow=True,
+            regex_string=r"^\d+([.,]\d{0,2})?$",  # Allow numbers with optional one or two decimal places
+            replacement_string="",
+        )
+    )
+    service_amount = ft.TextField(label='Amount', width=200, input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"[0-9]",
             replacement_string="",
         ))
-    service_amount = ft.TextField(label='Amount', value=global_service[2], width=200, input_filter=ft.InputFilter(
-            allow=True,
-            regex_string=r"[0-9]",
-            replacement_string="",
-        ))
-    service_description = ft.TextField(label='Description', value=global_service[3], width=200)
+    service_description = ft.TextField(label='Description', width=200)
     
     btn_add = OutlinedButton(text="Add", width=200, on_click=save)
     btn_delete = OutlinedButton(text="Delete", width=200, on_click=removeindex)
