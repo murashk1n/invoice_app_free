@@ -3,13 +3,27 @@ from flet_route import Params, Basket
 from flet import * 
 from views.app_bar import AppBar
 from util.snack_bar import show_snack_bar
-from Bill import get_user
 
 global_service = []
 
+def get_services():
+  return global_service
+
 def page_services(page: ft.Page, params: Params, basket: Basket):
+  
+    def validate(e):
+        if all([service_name.value,service_price.value,service_amount.value]):
+            btn_add.disabled = False
+        else:
+            btn_add.disabled = True
+        page.update()   
     
     def save(e):
+      if (len(mytable.rows) > 1):
+          btn_print.disabled = True
+      else:
+          btn_print.disabled = False
+      page.update()
       # Add new service data to global_service list
       service_id = len(global_service)
       global_service.append({
@@ -57,7 +71,7 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
       service_description.value = d
 
 		  # HIDE THE ADD NEW BUTTON . AND TRUE OF EDIT AND DELETE BUTTON
-      btn_add.visible = False
+      # btn_add.visible = False
       btn_delete.visible = True
       btn_edit.visible = True
       page.update()
@@ -96,29 +110,41 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
       btn_delete.visible = False
       btn_edit.visible = False
       page.update()
+      
+    def print_services(e):
+      # Implement the print functionality
+      print("Printing services...")
+      for service in global_service:
+        print(service)
         
     youid = Text("")
-    service_name = ft.TextField(label='Name', width=200)
+    service_name = ft.TextField(label='Name', width=200, on_change=validate)
     service_price = ft.TextField(
         label='Price',
         width=200,
+        on_change=validate,
         input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"^\d+([.,]\d{0,2})?$",  # Allow numbers with optional one or two decimal places
             replacement_string="",
         )
     )
-    service_amount = ft.TextField(label='Amount', width=200, input_filter=ft.InputFilter(
+    service_amount = ft.TextField(
+        label='Amount', 
+        width=200,
+        on_change=validate, 
+        input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"[0-9]",
             replacement_string="",
         ))
     service_description = ft.TextField(label='Description', width=200)
     
-    btn_add = OutlinedButton(text="Add", width=200, on_click=save)
-    btn_delete = OutlinedButton(text="Delete", width=200, on_click=removeindex)
+    btn_add = OutlinedButton(text="Add", width=200, on_click=save, disabled=True)
+    btn_delete = ElevatedButton(text="Delete", bgcolor="red", width=200, on_click=removeindex)
     btn_edit = OutlinedButton(text="Edit", width=200, on_click=editandsave)
-    
+    btn_print = OutlinedButton(text="Print", width=200, on_click=print_services, disabled=True)
+
     btn_delete.visible = False
     btn_edit.visible = False
     
@@ -137,22 +163,25 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
 
     return ft.View(
         "/page_services",
+        scroll = "always",
         
         controls = [
             AppBar().build(),
             Text(value='SERVICES', size=30),
-            Column([
             ft.Row([
                service_name,
                service_price,
                service_amount,
-               service_description]), 
+               service_description],
+                   alignment=ft.MainAxisAlignment.CENTER), 
             ft.Row([
                 btn_add,
                 btn_edit,
-                btn_delete]),
+                btn_delete,
+                btn_print],
+                   alignment=ft.MainAxisAlignment.CENTER),
               mytable                    
-              ])],
+              ],
               vertical_alignment=MainAxisAlignment.CENTER,
               horizontal_alignment=CrossAxisAlignment.CENTER,
               spacing=26
