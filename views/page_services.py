@@ -18,11 +18,11 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
             btn_add.disabled = True
         page.update()   
     
-    def save(e):
+    def add(e):
       if (len(mytable.rows) > 1):
-          btn_print.disabled = True
+          btn_download.disabled = True
       else:
-          btn_print.disabled = False
+          btn_download.disabled = False
       page.update()
       # Add new service data to global_service list
       service_id = len(global_service)
@@ -110,12 +110,6 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
       btn_delete.visible = False
       btn_edit.visible = False
       page.update()
-      
-    def print_services(e):
-      # Implement the print functionality
-      print("Printing services...")
-      for service in global_service:
-        print(service)
         
     youid = Text("")
     service_name = ft.TextField(label='Name', width=200, on_change=validate)
@@ -140,10 +134,10 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
         ))
     service_description = ft.TextField(label='Description', width=200)
     
-    btn_add = OutlinedButton(text="Add", width=200, on_click=save, disabled=True)
+    btn_add = OutlinedButton(text="Add", width=200, on_click=add, disabled=True)
     btn_delete = ElevatedButton(text="Delete", bgcolor="red", width=200, on_click=removeindex)
     btn_edit = OutlinedButton(text="Edit", width=200, on_click=editandsave)
-    btn_print = OutlinedButton(text="Print", width=200, on_click=print_services, disabled=True)
+    btn_download = OutlinedButton(text="Download", width=200, on_click=lambda _:page.go('/page_generate_pdf'), disabled=True)
 
     btn_delete.visible = False
     btn_edit.visible = False
@@ -178,7 +172,7 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
                 btn_add,
                 btn_edit,
                 btn_delete,
-                btn_print],
+                btn_download],
                    alignment=ft.MainAxisAlignment.CENTER),
               mytable                    
               ],
