@@ -8,25 +8,25 @@ from Bill import generate_bill
 def page_generate_pdf(page: ft.Page, params: Params, basket: Basket):
     
     def validate():
-        if directory_path.value:
+        if save_file_path.value:
             btn_download.disabled = False
         else:
             btn_download.disabled = True
         page.update()
   
     # Open directory dialog
-    def get_directory_result(e: FilePickerResultEvent):
-        directory_path.value = e.path if e.path else show_snack_bar(e.page, 'Cancelled!')
-        directory_path.update()
+    def save_file_result(e: FilePickerResultEvent):
+        save_file_path.value = e.path if e.path else show_snack_bar(e.page, 'Cancelled!')
+        save_file_path.update()
         validate()
 
-    get_directory_dialog = FilePicker(on_result=get_directory_result)
-    directory_path = Text()
+    save_file_dialog = FilePicker(on_result=save_file_result)
+    save_file_path = Text()
     btn_download = OutlinedButton(text="Download", width=200, on_click=generate_bill, disabled=True)
 
 
     # hide all dialogs in overlay
-    page.overlay.extend([get_directory_dialog])
+    page.overlay.extend([save_file_dialog])
 
     return ft.View(
         "/page_generate_pdf",
@@ -37,12 +37,12 @@ def page_generate_pdf(page: ft.Page, params: Params, basket: Basket):
             Row(
             [
                 ElevatedButton(
-                    "Open directory",
-                    icon=icons.FOLDER_OPEN,
-                    on_click=lambda _: get_directory_dialog.get_directory_path(),
+                    "Save file",
+                    icon=icons.SAVE,
+                    on_click=lambda _: save_file_dialog.save_file(),
                     disabled=page.web,
                 ),
-                directory_path,
+                save_file_path,
                 btn_download
             ],alignment=ft.MainAxisAlignment.CENTER
         ),                    

@@ -4,9 +4,11 @@ from validate_email import validate_email
 from flet import * 
 from views.app_bar import AppBar
 from util.snack_bar import show_snack_bar
-from Bill import get_user
 
 global_user = ['','','','','','']
+
+def get_user(e):
+  return global_user
 
 def page_my_info(page: ft.Page, params: Params, basket: Basket):
     
