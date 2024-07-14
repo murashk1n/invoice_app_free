@@ -54,7 +54,7 @@ def page_my_info(page: ft.Page, params: Params, basket: Basket):
                   [
                     user_name,
                     user_email,
-                    user_iban
+                    user_iban,
                   ],
                 ),
                 ft.Column(

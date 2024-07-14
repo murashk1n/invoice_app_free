@@ -20,9 +20,9 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
     
     def add(e):
       if (len(mytable.rows) > 1):
-          btn_download.disabled = True
+          btn_generate.disabled = True
       else:
-          btn_download.disabled = False
+          btn_generate.disabled = False
       page.update()
       # Add new service data to global_service list
       service_id = len(global_service)
@@ -137,7 +137,7 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
     btn_add = OutlinedButton(text="Add", width=200, on_click=add, disabled=True)
     btn_delete = ElevatedButton(text="Delete", bgcolor="red", width=200, on_click=removeindex)
     btn_edit = OutlinedButton(text="Edit", width=200, on_click=editandsave)
-    btn_download = OutlinedButton(text="Download", width=200, on_click=lambda _:page.go('/page_generate_pdf'), disabled=True)
+    btn_generate = OutlinedButton(text="Generate PDF", width=200, on_click=lambda _:page.go('/page_generate_pdf'), disabled=True)
 
     btn_delete.visible = False
     btn_edit.visible = False
@@ -172,7 +172,7 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
                 btn_add,
                 btn_edit,
                 btn_delete,
-                btn_download],
+                btn_generate],
                    alignment=ft.MainAxisAlignment.CENTER),
               mytable                    
               ],

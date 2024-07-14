@@ -8,31 +8,25 @@ from reportlab.lib.colors import Color
 import sqlite3
 conn = sqlite3.connect('invoice.db',check_same_thread=False)
 
+from views.page_services import get_services
+from views.page_my_info import get_user
+from views.page_customer import get_customer
 
-global_bill = []
-global_customer = []
-global_user = []
 
-def get_invoice(invoice):
-    global global_bill
-    global_bill = invoice
-    
-def get_user(user):
-    global global_user
-    global_user = user
-    
-def get_customer():
-    c = conn.cursor()
-    c.execute("SELECT * FROM customer WHERE id=?", (global_bill[1], ))
-    global global_customer
-    global_customer = list(c.fetchone())
-    conn.commit()
-    
+global_services = get_services
+global_customer = get_customer
+global_user = get_user
+global_path = ''
+
+def get_path(path):
+    global global_path
+    global_path = path
+   
 def generate_bill(e):
     page = e.page
     page.snack_bar = ft.SnackBar(ft.Text('Successful download!'))
     page.snack_bar.open = True
-    generate_bill_pdf(f"{global_bill[3]}__{global_bill[4]}.pdf")
+    generate_bill_pdf(global_path)
     page.update()
     
 def generate_bill_pdf(filename):
@@ -62,6 +56,9 @@ class PDFPSReporte:
 
     def PageHeader(self):
             get_customer()
+            
+            print(global_services)
+            
             img = Image('img\logo.png', kind='proportional')
             img.drawHeight = 50
             img.drawWidth = 50
@@ -69,28 +66,27 @@ class PDFPSReporte:
             self.elements.append(img)
             
             psDetalle = ParagraphStyle('Resumen', fontSize=9, leading=14, justifyBreaks=1, alignment=TA_LEFT, justifyLastLine=1)
-            name = f"Customer: {global_customer[1]} {global_customer[2]}"
-            address = f"Address: {global_customer[3]}"
-            phone = f"Phone: {global_customer[6]}"
-            email =  f"Email: {global_customer[7]}"
-            user =  f"User: {global_user[1]}"
-            print(user)
+            # name = f"Customer: {global_customer[1]} {global_customer[2]}"
+            # address = f"Address: {global_customer[3]}"
+            # phone = f"Phone: {global_customer[6]}"
+            # email =  f"Email: {global_customer[7]}"
+            # user =  f"User: {global_user[1]}"
             
-            paragraphReportSummary = Paragraph(name, psDetalle)
-            self.elements.append(paragraphReportSummary)
-            paragraphReportSummary = Paragraph(address, psDetalle)
-            self.elements.append(paragraphReportSummary)
-            paragraphReportSummary = Paragraph(phone, psDetalle)
-            self.elements.append(paragraphReportSummary)
-            paragraphReportSummary = Paragraph(email, psDetalle)
-            self.elements.append(paragraphReportSummary)
-            paragraphReportSummary = Paragraph(user, psDetalle)
-            self.elements.append(paragraphReportSummary)
+            # paragraphReportSummary = Paragraph(name, psDetalle)
+            # self.elements.append(paragraphReportSummary)
+            # paragraphReportSummary = Paragraph(address, psDetalle)
+            # self.elements.append(paragraphReportSummary)
+            # paragraphReportSummary = Paragraph(phone, psDetalle)
+            # self.elements.append(paragraphReportSummary)
+            # paragraphReportSummary = Paragraph(email, psDetalle)
+            # self.elements.append(paragraphReportSummary)
+            # paragraphReportSummary = Paragraph(user, psDetalle)
+            # self.elements.append(paragraphReportSummary)
 
             psHeaderText = ParagraphStyle('Hed0', fontSize=16, alignment=TA_CENTER, borderWidth=3, textColor=self.colorOhkaGreen0)
-            text = f"INVOICE {global_bill[1]}"
-            paragraphReportHeader = Paragraph(text, psHeaderText)
-            self.elements.append(paragraphReportHeader)
+            # text = f"INVOICE {global_customer[0]}"
+            # paragraphReportHeader = Paragraph(text, psHeaderText)
+            # self.elements.append(paragraphReportHeader)
 
             spacer = Spacer(10, 10)
             self.elements.append(spacer)
@@ -121,13 +117,13 @@ class PDFPSReporte:
             self.elements.append(spacer)
             
             psDetalle = ParagraphStyle('Resumen', fontSize=9, leading=14, justifyBreaks=1, alignment=TA_RIGHT, justifyLastLine=1)
-            due_date = f"Due date: {global_bill[7]}"
-            bank_reference = f"Bank reference: {global_bill[3]}"
+            # due_date = f"Due date: {global_customer[0]}"
+            # bank_reference = f"Bank reference: {global_customer[0]}"
             
-            paragraphReportSummary = Paragraph(due_date, psDetalle)
-            self.elements.append(paragraphReportSummary)
-            paragraphReportSummary = Paragraph(bank_reference, psDetalle)
-            self.elements.append(paragraphReportSummary)
+            # paragraphReportSummary = Paragraph(due_date, psDetalle)
+            # self.elements.append(paragraphReportSummary)
+            # paragraphReportSummary = Paragraph(bank_reference, psDetalle)
+            # self.elements.append(paragraphReportSummary)
 
 
             spacer = Spacer(10, 10)
@@ -179,29 +175,29 @@ class PDFPSReporte:
                       ParagraphStyle(name="04", alignment=TA_CENTER),
                       ParagraphStyle(name="05", alignment=TA_CENTER)]
         
-        c = conn.cursor()
-        c.execute("SELECT * FROM invoice_line WHERE invoice_id=?", (global_bill[0], ))
-        lines = list(c.fetchall())
+        # c = conn.cursor()
+        # c.execute("SELECT * FROM invoice_line WHERE invoice_id=?", (global_bill[0], ))
+        # lines = list(c.fetchall())
         
-        for line in lines:
-            print(line)
-            lineData = []
-            lineData.append(str(line[1]))  # Adding invoice line ID
-            lineData.append(str(line[2]))  # Adding product item ID
-            lineData.append(str(line[3]))  # Adding quantity
-            lineData.append(str(line[4]))  # Adding price
-            lineData.append(line[5])  # Adding product description
+        # for line in lines:
+        #     print(line)
+        #     lineData = []
+        #     lineData.append(str(line[1]))  # Adding invoice line ID
+        #     lineData.append(str(line[2]))  # Adding product item ID
+        #     lineData.append(str(line[3]))  # Adding quantity
+        #     lineData.append(str(line[4]))  # Adding price
+        #     lineData.append(line[5])  # Adding product description
     
         # Now you can proceed to append this lineData to your main data list or perform any other desired operation
-            data.append(lineData)
+            # data.append(lineData)
 
         # Row for total
-        totalRow = ["Total", "", "", "", global_bill[4]]
-        for item in totalRow:
-            ptext = "<font size='%s'>%s</font>" % (fontSize-1, item)
-            p = Paragraph(ptext, alignStyle[1])
-            formattedLineData.append(p)
-        data.append(formattedLineData)
+        # totalRow = ["Total", "", "", "", global_bill[4]]
+        # for item in totalRow:
+        #     ptext = "<font size='%s'>%s</font>" % (fontSize-1, item)
+        #     p = Paragraph(ptext, alignStyle[1])
+        #     formattedLineData.append(p)
+        # data.append(formattedLineData)
         
         #print(data)
         table = Table(data, colWidths=[50, 50, 50, 80, 200])
