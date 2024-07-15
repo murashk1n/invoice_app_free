@@ -6,12 +6,12 @@ from views.app_bar import AppBar
 from util.snack_bar import show_snack_bar
 from Bill import get_customer
 
-global_customer = ['','','','']
+global_customer = ['','','','','']
 
 def page_customer(page: ft.Page, params: Params, basket: Basket):
     
     def save(e):
-        if validate_email(customer_email.value) == True:
+        if customer_email.value == '' or validate_email(customer_email.value) == True:
           show_snack_bar(e.page, 'Saved!')
           get_customer(global_customer)
           page.go('/page_services')
@@ -19,9 +19,9 @@ def page_customer(page: ft.Page, params: Params, basket: Basket):
           show_snack_bar(e.page, 'Wrong email format!')  
 
     def validate(e):
-        if all([customer_name.value,customer_company.value,customer_email.value, customer_phone.value]):
+        if all([customer_name.value]):
             global global_customer
-            global_customer = [customer_name.value,customer_company.value,customer_email.value, customer_phone.value]
+            global_customer = [customer_name.value,customer_company.value,customer_email.value, customer_phone.value, customer_address.value]
             btn_save.disabled = False
         else:
             btn_save.disabled = True
@@ -35,6 +35,7 @@ def page_customer(page: ft.Page, params: Params, basket: Basket):
             regex_string=r"[0-9+]",
             replacement_string="",
         ))
+    customer_address = ft.TextField(label='Address', value=global_customer[4], width=410)
     btn_save = ft.OutlinedButton(text='Save', width=200, on_click=save, disabled=True)
 
     return ft.View(
@@ -60,6 +61,7 @@ def page_customer(page: ft.Page, params: Params, basket: Basket):
               ],
               alignment=ft.MainAxisAlignment.CENTER
             ),
+            customer_address,
             btn_save,
           ],
         vertical_alignment=MainAxisAlignment.CENTER,

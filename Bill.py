@@ -2,7 +2,9 @@ import flet as ft
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER, TA_JUSTIFY
+from datetime import datetime, timedelta
 
 global_services = []
 global_customer = []
@@ -40,8 +42,8 @@ def generate_bill(e):
 def generate_bill_pdf(filename):
     pdf = SimpleDocTemplate(filename, pagesize=letter)
     elements = []
-    
     total = 0
+    
     # Convert global_service list to table data format
     services = [["Description", "Quantity", "Unit Price", "Total"]]
     for service in global_services:
@@ -56,19 +58,24 @@ def generate_bill_pdf(filename):
     styles = getSampleStyleSheet()
     style_normal = styles["Normal"]
     style_heading = styles["Heading1"]
+    style_head_L = ParagraphStyle('Resumen', fontSize=15, leading=14, justifyBreaks=1, alignment=TA_LEFT, justifyLastLine=1)
+    style_head2_R= ParagraphStyle('Resumen', fontSize=15, leading=14, justifyBreaks=1, alignment=TA_RIGHT, justifyLastLine=1)
+       
+    
+    style_right= ParagraphStyle('Resumen', alignment=TA_RIGHT)
 
     # Add title
     elements.append(Paragraph("Invoice", style_heading))
     elements.append(Spacer(1, 12))
 
     # Add company and customer details
-    # elements.append(Paragraph(f"My Name: {global_user[0]}", style_normal))
-    # elements.append(Paragraph(f"My Company: {global_user[0]}", style_normal))
-    # elements.append(Spacer(1, 12))
-    elements.append(Paragraph(f"Customer Name: {global_customer[0]}", style_normal))
-    elements.append(Paragraph(f"Customer Company: {global_customer[1]}", style_normal))
-    elements.append(Paragraph(f"Customer e-mail: {global_customer[2]}", style_normal))
-    elements.append(Paragraph(f"Customer phone: {global_customer[3]}", style_normal))
+    elements.append(Paragraph(f"Date: {global_invoice[0]}", style_right))
+    elements.append(Paragraph(f"Customer:", style_head_L))
+    elements.append(Paragraph(f"Name: {global_customer[0]}", style_normal))
+    elements.append(Paragraph(f"Company: {global_customer[1]}", style_normal))
+    elements.append(Paragraph(f"E-mail: {global_customer[2]}", style_normal))
+    elements.append(Paragraph(f"Phone: {global_customer[3]}", style_normal))
+    elements.append(Paragraph(f"Address: {global_customer[4]}", style_normal))
     elements.append(Spacer(1, 12))
 
     # Add the services table
@@ -84,13 +91,43 @@ def generate_bill_pdf(filename):
     ]))
     elements.append(table)
     
-    elements.append(Paragraph(f"Recipient: {global_user[0]}", style_normal))
-    elements.append(Paragraph(f"Company: {global_user[1]}", style_normal))
-    elements.append(Paragraph(f"e-mail: {global_user[3]}", style_normal))
-    elements.append(Paragraph(f"phone: {global_user[4]}", style_normal))
-    elements.append(Paragraph(f"IBAN: {global_user[4]}", style_normal))
-    elements.append(Paragraph(f"BIC: {global_user[4]}", style_normal))
-    elements.append(Spacer(1, 12))
+    delta = int(global_invoice[1])
+    due_date = datetime.now() + timedelta(days=delta)
+    # Add recipient details table
+    recipient_data = [
+        ["Recipient", "Details"],
+        ["Name", global_user[0]],
+        ["Company", global_user[1]],
+        ["E-mail", global_user[2]],
+        ["Phone", global_user[3]],
+        ["IBAN", global_user[4]],
+        ["BIC", global_user[5]],
+        ["Due date", due_date.strftime('%d-%m-%Y')],
+        ["Bank reference", global_invoice[2]],
+    ]
+    recipient_table = Table(recipient_data)
+    recipient_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    elements.append(recipient_table)
+    
+    
+    # elements.append(Paragraph(f"Recipient: ", style_head2_R))
+    # elements.append(Paragraph(f"Name: {global_user[0]}", style_right))
+    # elements.append(Paragraph(f"Company: {global_user[1]}", style_right))
+    # elements.append(Paragraph(f"E-mail: {global_user[2]}", style_right))
+    # elements.append(Paragraph(f"Phone: {global_user[3]}", style_right))
+    # elements.append(Paragraph(f"IBAN: {global_user[4]}", style_right))
+    # elements.append(Paragraph(f"BIC: {global_user[5]}", style_right))
+    # elements.append(Paragraph(f"Due date: {global_invoice[1]}", style_right))
+    # elements.append(Paragraph(f"Bank reference: {global_invoice[2]}", style_right))
+    # elements.append(Spacer(1, 12))
 
     # Build the PDF
     pdf.build(elements)
