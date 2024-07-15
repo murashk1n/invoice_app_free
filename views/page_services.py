@@ -10,9 +10,7 @@ global_service = []
 def page_services(page: ft.Page, params: Params, basket: Basket):
   
     def validate(e):
-        if all([service_name.value,service_price.value,service_amount.value]):
-            global global_service
-            global_service=[service_name.value,service_price.value,service_amount.value]
+        if all([service_description.value,service_price.value,service_amount.value]):
             get_services(global_service)
             btn_add.disabled = False
         else:
@@ -29,10 +27,9 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
       service_id = len(global_service)
       global_service.append({
             'id': service_id,
-            'name': service_name.value,
+            'description': service_description.value,
             'price': service_price.value,
             'amount': service_amount.value,
-            'description': service_description.value
       })
       
       mytable.rows.append(
@@ -40,10 +37,9 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
 			cells=[
 				# THIS FOR ID THE YOU TABLE 
 				DataCell(Text(len(mytable.rows))),
-				DataCell(Text(service_name.value)),
+				DataCell(Text(service_description.value)),
 				DataCell(Text(service_price.value)),
 				DataCell(Text(service_amount.value)),
-				DataCell(Text(service_description.value)),
 			],
 			# IF YOU CLIK THIS ROW THEN RUN YOU FUNCTION
 			# THIS SCRIPT IS IF CLICK THEN GET THE ID AND NAME OF ROW		
@@ -51,25 +47,23 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
         e.control.cells[0].content.value,
         e.control.cells[1].content.value,
         e.control.cells[2].content.value,
-        e.control.cells[3].content.value,
-        e.control.cells[4].content.value)
+        e.control.cells[3].content.value)
 				)
 			)
       
 		  # THEN BLANK AGAIN THE TEXTFIELD
-      service_name.value = ""
+      service_description.value = ""
       service_price.value = ""
       service_amount.value = ""
-      service_description.value = ""
+
       page.update()
       
-    def editindex(id, a,b,c,d):
+    def editindex(id, a,b,c):
 		  # SET NAME TEXTFIELD TO YOU SELECT THE ROW
       youid.value = int(id)
-      service_name.value = a
+      service_description.value = a
       service_price.value = b
       service_amount.value = c
-      service_description.value = d
 
 		  # HIDE THE ADD NEW BUTTON . AND TRUE OF EDIT AND DELETE BUTTON
       # btn_add.visible = False
@@ -81,18 +75,17 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
 		    # Update global_service with edited data
       global_service[youid.value] = {
             'id': youid.value,
-            'name': service_name.value,
+            'description': service_description.value,
             'price': service_price.value,
             'amount': service_amount.value,
-            'description': service_description.value
       }
 
       # Update the table row with new data
       row = mytable.rows[youid.value]
-      row.cells[1].content = Text(service_name.value)
+      row.cells[1].content = Text(service_description.value)
       row.cells[2].content = Text(service_price.value)
       row.cells[3].content = Text(service_amount.value)
-      row.cells[4].content = Text(service_description.value)
+
       show_snack_bar(e.page, 'Updated!')
     
     def removeindex(e):
@@ -113,7 +106,7 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
       page.update()
         
     youid = Text("")
-    service_name = ft.TextField(label='Name', width=200, on_change=validate)
+    service_description = ft.TextField(label='Description', width=200, on_change=validate)
     service_price = ft.TextField(
         label='Price',
         width=200,
@@ -125,7 +118,7 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
         )
     )
     service_amount = ft.TextField(
-        label='Amount', 
+        label='Quantity', 
         width=200,
         on_change=validate, 
         input_filter=ft.InputFilter(
@@ -133,7 +126,6 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
             regex_string=r"[0-9]",
             replacement_string="",
         ))
-    service_description = ft.TextField(label='Description', width=200)
     
     btn_add = OutlinedButton(text="Add", width=200, on_click=add, disabled=True)
     btn_delete = ElevatedButton(text="Delete", bgcolor="red", width=200, on_click=removeindex)
@@ -147,10 +139,9 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
     mytable =  DataTable(
 		  columns=[
 			  DataColumn(Text("id")),
-			  DataColumn(Text("name")),
-			  DataColumn(Text("price")),
-			  DataColumn(Text("amount")),
 			  DataColumn(Text("description")),
+			  DataColumn(Text("price")),
+			  DataColumn(Text("quantity")),
 		  ],
 		#THIS IS YOU ROW OF YOU TABLE
 		  rows=[]
@@ -164,10 +155,10 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
             AppBar().build(),
             Text(value='SERVICES', size=30),
             ft.Row([
-               service_name,
+               service_description,
                service_price,
                service_amount,
-               service_description],
+               ],
                    alignment=ft.MainAxisAlignment.CENTER), 
             ft.Row([
                 btn_add,

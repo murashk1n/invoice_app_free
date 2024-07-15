@@ -3,10 +3,8 @@ from flet_route import Params, Basket
 from flet import * 
 from views.app_bar import AppBar
 from util.snack_bar import show_snack_bar
-from Bill import get_path, generate_bill
+from Bill import get_path, get_invoice, generate_bill
 import datetime
-
-global_path =''
 
 def page_generate_pdf(page: ft.Page, params: Params, basket: Basket):
     
@@ -15,6 +13,7 @@ def page_generate_pdf(page: ft.Page, params: Params, basket: Basket):
         if e.path:
             save_file_path.value = e.path
             get_path(e.path)
+            get_invoice([current_date.value, days_to_pay.value, bank_ref.value])
             btn_download.disabled = False
             page.update()
         else:
