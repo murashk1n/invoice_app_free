@@ -3,16 +3,17 @@ from flet_route import Params, Basket
 from flet import * 
 from views.app_bar import AppBar
 from util.snack_bar import show_snack_bar
+from Bill import get_services
 
 global_service = []
-
-def get_services():
-  return global_service
 
 def page_services(page: ft.Page, params: Params, basket: Basket):
   
     def validate(e):
         if all([service_name.value,service_price.value,service_amount.value]):
+            global global_service
+            global_service=[service_name.value,service_price.value,service_amount.value]
+            get_services(global_service)
             btn_add.disabled = False
         else:
             btn_add.disabled = True

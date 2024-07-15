@@ -4,26 +4,24 @@ from validate_email import validate_email
 from flet import * 
 from views.app_bar import AppBar
 from util.snack_bar import show_snack_bar
+from Bill import get_customer
 
 global_customer = ['','','','']
-
-def get_customer():
-  return global_customer
 
 def page_customer(page: ft.Page, params: Params, basket: Basket):
     
     def save(e):
         if validate_email(customer_email.value) == True:
           show_snack_bar(e.page, 'Saved!')
-          # global global_customer
-          # global_customer = [customer_name.value,customer_company.value,customer_email.value, customer_phone.value]
-          # get_user(global_customer)
+          get_customer(global_customer)
           page.go('/page_services')
         else:
           show_snack_bar(e.page, 'Wrong email format!')  
 
     def validate(e):
         if all([customer_name.value,customer_company.value,customer_email.value, customer_phone.value]):
+            global global_customer
+            global_customer = [customer_name.value,customer_company.value,customer_email.value, customer_phone.value]
             btn_save.disabled = False
         else:
             btn_save.disabled = True
