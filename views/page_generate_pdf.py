@@ -35,6 +35,7 @@ def page_generate_pdf(page: ft.Page, params: Params, basket: Basket):
     days_to_pay = ft.TextField(
         label='Days to pay',
         width=200,
+        value=0,
         input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"[0-9]",
