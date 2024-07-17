@@ -19,7 +19,7 @@ def page_my_info(page: ft.Page, params: Params, basket: Basket):
         show_snack_bar(e.page, 'Invalid IBAN')
       elif user_email.value is not '' and validate_email(user_email.value) == False:
         show_snack_bar(e.page, 'Wrong email format!')
-      elif user_email.value is not '' and not re.match(user_bic.value, bic_regex):
+      elif user_bic.value is not '' and re.match(user_bic.value, bic_regex):
         show_snack_bar(e.page, 'Invalid BIC')
       else:
         show_snack_bar(e.page, 'Saved!')
@@ -27,24 +27,31 @@ def page_my_info(page: ft.Page, params: Params, basket: Basket):
         page.go('/page_customer')
 
     def validate(e):
-        if all([user_name.value, user_iban.value]):
-            global global_user
-            global_user = [user_name.value,user_company.value,user_email.value, user_phone.value, user_iban.value, user_bic.value]
-            btn_save.disabled = False
-        else:
-            btn_save.disabled = True
-        page.update()
+      # Convert IBAN and BIC inputs to uppercase
+      if e.control.label in ['IBAN', 'BIC']:
+        e.control.value = e.control.value.upper()
+    
+      # Update the UI with the converted value
+      e.page.update()
+      
+      if all([user_name.value, user_iban.value]):
+        global global_user
+        global_user = [user_name.value,user_company.value,user_email.value, user_phone.value, user_iban.value, user_bic.value]
+        btn_save.disabled = False
+      else:
+        btn_save.disabled = True
+      page.update()
 
     user_name = ft.TextField(label='Name', value=global_user[0], width=200, on_change=validate)
-    user_company = ft.TextField(label='Company', value=global_user[1], width=200)
-    user_email = ft.TextField(label='Email', value=global_user[2], width=200)
-    user_phone = ft.TextField(label='Phone', value=global_user[3], width=200, input_filter=ft.InputFilter(
+    user_company = ft.TextField(label='Company', value=global_user[1], width=200, on_change=validate)
+    user_email = ft.TextField(label='Email', value=global_user[2], width=200, on_change=validate)
+    user_phone = ft.TextField(label='Phone', value=global_user[3], width=200, on_change=validate, input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"[0-9+]",
             replacement_string="",
         ))
     user_iban = ft.TextField(label='IBAN', value=global_user[4], width=200, on_change=validate)
-    user_bic = ft.TextField(label='BIC', value=global_user[5], width=200)
+    user_bic = ft.TextField(label='BIC', value=global_user[5], width=200, on_change=validate)
     btn_save = ft.OutlinedButton(text='Save', width=200, on_click=save, disabled=True)
 
     return ft.View(

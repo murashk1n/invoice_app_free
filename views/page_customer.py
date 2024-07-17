@@ -30,12 +30,12 @@ def page_customer(page: ft.Page, params: Params, basket: Basket):
     customer_name = ft.TextField(label='Name', value=global_customer[0], width=200, on_change=validate)
     customer_company = ft.TextField(label='Company', value=global_customer[1], width=200, on_change=validate)
     customer_email = ft.TextField(label='Email', value=global_customer[2], width=200, on_change=validate)
-    customer_phone = ft.TextField(label='Phone', value=global_customer[3], width=200, input_filter=ft.InputFilter(
+    customer_phone = ft.TextField(label='Phone', value=global_customer[3], width=200, on_change=validate, input_filter=ft.InputFilter(
             allow=True,
             regex_string=r"[0-9+]",
             replacement_string="",
         ))
-    customer_address = ft.TextField(label='Address', value=global_customer[4], width=410)
+    customer_address = ft.TextField(label='Address', value=global_customer[4], on_change=validate, width=410)
     btn_save = ft.OutlinedButton(text='Save', width=200, on_click=save, disabled=True)
 
     return ft.View(

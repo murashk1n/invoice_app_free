@@ -18,7 +18,8 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
         page.update()   
     
     def add(e):
-      if (len(mytable.rows) > 1):
+      btn_add.disabled = True
+      if global_service is None:
           btn_generate.disabled = True
       else:
           btn_generate.disabled = False

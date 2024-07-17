@@ -10,6 +10,8 @@ def page_generate_pdf(page: ft.Page, params: Params, basket: Basket):
     
   # Save file dialog
     def save_file_result(e: FilePickerResultEvent):
+        if days_to_pay.value == '':
+            days_to_pay.value = 0
         if e.path:
             save_file_path.value = e.path
             get_path(e.path)
