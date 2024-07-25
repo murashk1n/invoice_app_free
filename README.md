@@ -2,6 +2,8 @@
 [Python](https://www.python.org/)
 [Flet](https://flet.dev/)
 
+### You can also download .exe file here: [makeinvoice](http://makeinvoice.org/)
+
 ## User Input Interface:
 
 ### You can choose dark or light theme
