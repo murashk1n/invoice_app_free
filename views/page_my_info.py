@@ -14,6 +14,8 @@ def page_my_info(page: ft.Page, params: Params, basket: Basket):
     def save(e):
       iban_regex = r'^[A-Z]{2}\d{2}[A-Z0-9]{1,30}$'
       bic_regex = r'^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$'
+      phone_regex = r'^\+?(\d{1,3})?[-. ]?(\(?\d{1,4}\)?)?[-. ]?\d{1,4}[-. ]?\d{1,4}[-. ]?\d{1,9}$'
+
       
       if not re.match(iban_regex, user_iban.value):
         show_snack_bar(e.page, 'Invalid IBAN')
@@ -21,6 +23,8 @@ def page_my_info(page: ft.Page, params: Params, basket: Basket):
         show_snack_bar(e.page, 'Wrong email format!')
       elif user_bic.value is not '' and re.match(user_bic.value, bic_regex):
         show_snack_bar(e.page, 'Invalid BIC')
+      elif user_phone.value is not '' and re.match(user_phone.value, phone_regex):
+        show_snack_bar(e.page, 'Invalid phone number')
       else:
         show_snack_bar(e.page, 'Saved!')
         get_user(global_user)
