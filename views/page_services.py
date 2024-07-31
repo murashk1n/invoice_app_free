@@ -67,7 +67,7 @@ def page_services(page: ft.Page, params: Params, basket: Basket):
       service_amount.value = c
 
 		  # HIDE THE ADD NEW BUTTON . AND TRUE OF EDIT AND DELETE BUTTON
-      # btn_add.visible = False
+      btn_add.visible = False
       btn_delete.visible = True
       btn_edit.visible = True
       page.update()
